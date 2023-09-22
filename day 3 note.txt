@@ -1,0 +1,450 @@
+DAY 4 TASK 2: Cisco Network Security Fundamentals:
+what is 100% job interview question:
+ 
+
+Attack transport layer: layer 4
+
+net use \\10.32.1.10\ipc$
+
+3way handshake: 
+hacker 10.42.1.10 		victim: 10.32.1.10
+SP: 10000			SP: 445
+DP: 445				DP: 10000
+
+
+net use t: \\10.32.1.10\c$
+
+
+How to attack layer 3: ip addressing
+
+me tampo ka ba sa alma mater?
+
+
+
+task 4: how to protect your network
+
+UTM = Mura: unified threat management: 
+firewall
+vpn
+AV
+IPS/IDS
+NetworkAdmissionControl
+
+firewall:
+PangRich: AIenabled +NGFW: l1 to l7: policy:
+PwedeNa
+eww
+
+TASK 5: STANDARD access-list common use:
+rule 1: if hired: CyberSecAnalist.
+block all the IP address of "GagongBansa: china, NK, russia"
+
+ex1
+@EDGE
+conf t
+no access-list 1
+access-list 1 deny 10.11.0.0 0.0.255.255
+access-list 1 deny 10.12.0.0 0.0.255.255
+access-list 1 deny 10.21.0.0 0.0.255.255
+access-list 1 perm any
+Int gi 0/0/1
+IP access-group 1 in
+do sh ip access-list 1
+
+how to unlock K
+
+conf t
+Int gi 0/0/1
+NO IP access-group 1 in
+do sh ip access-list 1
+
+ex2 NEW friends
+@EDGE
+
+conf t
+no access-list 2
+access-list 2 deny 10.11.0.0 0.0.255.255
+access-list 2 deny 10.12.0.0 0.0.255.255
+access-list 2 deny 10.22.0.0 0.0.255.255
+access-list 2 perm any
+Int gi 0/0/1
+IP access-group 2 in
+do sh ip access-list 2
+
+Unlock
+conf t
+Int gi 0/0/1
+NO IP access-group 4 in
+do sh ip access-list 4
+
+
+Ex3
+conf t
+no access-list 3
+access-list 3 deny 10.11.0.0 0.0.255.255
+access-list 3 deny 10.12.0.0 0.0.255.255
+access-list 3 deny 10.21.0.0 0.0.255.255
+access-list 3 deny 10.22.0.0 0.0.255.255
+access-list 3 perm any
+Int gi 0/0/1
+IP access-group 3 in
+do sh ip access-list 3
+
+shortcut:
+
+conf t
+no access-list 4
+access-list 4 Permit 10.32.0.0 0.0.255.255
+!access-list 4 deny ANY
+Int gi 0/0/1
+IP access-group 4 in
+do sh ip access-list 4
+
+Unlock
+conf t
+Int gi 0/0/1
+NO IP access-group 4 in
+do sh ip access-list 4
+
+
+Ex4
+conf t
+no access-list 5
+access-list 5 Permit 10.12.0.0 0.0.255.255
+!access-list 5 deny ANY
+Int gi 0/0/1
+IP access-group 5 in
+do sh ip access-list 5
+
+Unlock
+conf t
+Int gi 0/0/1
+NO IP access-group 5 in
+do sh ip access-list 5
+
+
+==============
+
+VAPT
+TASK 6: get a taste of cybersec: VAPT: vulnerability assesment and PenTest:
+
+VAPT report: 
+
+how to secure your client: 
+
+config t
+int fa 0/0
+ ip add 10.42.100.9 255.255.255.0 Secondary
+service finger
+service tcp-small-servers
+service udp-small-servers
+ip dns server
+ip http server
+ip http secure-server
+!Make Ping EASY
+ip host pc 10.42.1.10
+ip host cm 10.42.100.8
+ip host cm2 10.42.100.9
+ip host p1 10.42.100.102
+ip host p2 10.42.100.103
+ip host c1 10.42.50.6
+ip host c2 10.42.50.6
+ip host sw 10.42.1.4
+ip host ed 10.42.42.1
+
+ex1: You are a CSAnalyst: 150k/month your Job is to secure cm(10.42.100.8) and cm2 (.9)
+cm = webserver, cm2 is ssh. dns 
+
+Create a firewall policy to allow
+cm open http,https (80, 443)
+
+cisco Basic FWformula:
+
+	"PRotocol:tcp,icmp,udp,IP	hacker:any 	victim: host	port: "
+
+@cucm:
+
+config t
+no access-list 100
+access-list 100 Permit tcp any host cm eq 80
+access-list 100 Permit tcp any host cm eq 443
+access-list 100 Permit tcp any host cm2 eq 22
+access-list 100 Permit tcp any host cm2 eq 53
+Int fa 0/0
+ip access-group 100 in
+do sh ip access-list 100
+
+cmd
+nmap -Pnv cm
+
+unProtect:
+conf t
+Int fa 0/0
+NO ip access-group 100 in
+do sh ip access-list 100
+
+Ex2
+
+make a new firewall policy: 101:
+cm open ssh, telnet, domain
+cm2 open http, https
+
+config t
+no access-list 101
+access-list 101 Permit tcp any host cm eq 2000
+access-list 101 Permit tcp any host cm eq 23
+access-list 101 Permit tcp any host cm eq 53
+access-list 101 Permit tcp any host cm2 eq 80
+access-list 101 Permit tcp any host cm2 eq 443
+Int fa 0/0
+ip access-group 101 in
+do sh ip access-list 101
+
+
+Ex3
+create firewall policy to allow
+cm telnet, http, dns
+cm2 ssh, https, telnet, sccp
+
+config t
+no access-list 102
+access-list 102 Permit tcp any host cm eq 23
+access-list 102 Permit tcp any host cm eq 80
+access-list 102 Permit tcp any host cm eq 53
+access-list 102 Permit tcp any host cm2 eq 22
+access-list 102 Permit tcp any host cm2 eq 443
+access-list 102 Permit tcp any host cm2 eq 23
+access-list 102 Permit tcp any host cm2 eq 2000
+Int fa 0/0
+ip access-group 102 in
+do sh ip access-list 102
+
+open:
+conf t
+Int fa 0/0
+NO ip access-group 102 in
+do sh ip access-list 102
+
+ex4 create a policy that allows
+- cm allows ping, telnet, ssh, https
+- cm2 allows daytime 13, chargen 19, finger, domain 
+
+@cum
+
+config t
+no access-list 104
+access-list 104 Permit icmp any host cm 
+access-list 104 Permit tcp any host cm eq 23
+access-list 104 Permit tcp any host cm eq 22
+access-list 104 Permit tcp any host cm eq 443
+access-list 104 Permit tcp any host cm2 eq 13
+access-list 104 Permit tcp any host cm2 eq 79
+access-list 104 Permit tcp any host cm2 eq 53
+Int fa 0/0
+ip access-group 104 in
+do sh ip access-list 104
+
+ex 5
+
+create a policy that allows: 105
+- cm allows domain, ssh, web
+- cm2 allow ping, telnet, ssh, chargen, daytime = 8lines
+
+config t
+no access-list 105
+access-list 105 Permit tcp any host cm eq 53
+access-list 105 Permit tcp any host cm eq 22
+access-list 105 Permit tcp any host cm eq 80
+access-list 105 Permit tcp any host cm2 eq 23
+access-list 105 Permit tcp any host cm2 eq 22
+access-list 105 Permit tcp any host cm2 eq 19
+access-list 105 Permit tcp any host cm2 eq 13
+access-list 105 Permit icmp any host cm2
+Int fa 0/0
+ip access-group 105 in
+do sh ip access-list 105
+
+
+ex6
+
+multiple hackers, multiple victims: 
+create a policy for these conditions:
+- p1 can sccp cm
+- p2 can ping, http cm
+- c1 can ping cm
+- c2 can http cm
+
+conf t
+no access-list 106
+access-list 106 permit tcp host p1 host cm eq 2000
+access-list 106 permit icmp host p2 host cm
+access-list 106 permit tcp host p2 host cm eq 80
+access-list 106 permit icmp host c1 host cm
+access-list 106 permit tcp host c2 host cm eq 80
+Int fa 0/0
+ip access-group 106 in
+do sh ip access-list 106
+
+Int fa 0/0
+No ip access-group 106 in
+do sh ip access-list 106
+
+
+ex7
+
+multiple hackers, multiple victims:107
+create a policy for these conditions:
+- p1 can ping, http cm
+- p2 can sccp cm
+- c1 can ping http cm
+- c2 can ping cm
+
+conf t
+no access-list 107
+access-list 107 permit tcp host p1 host cm eq 80
+access-list 107 permit icmp host p1 host cm
+access-list 107 permit tcp host p2 host cm eq 2000
+access-list 107 permit icmp host c1 host cm
+access-list 107 permit tcp host c2 host cm eq 80
+Int fa 0/0
+ip access-group 107 in
+do sh ip access-list 107
+
+Int fa 0/0
+No ip access-group 108 in
+do sh ip access-list 106
+
+
+ex 8
+
+multiple hackers, multiple victims:108
+create a policy for these conditions:
+- p1 can ping, http cm
+- p2 can ping, http cm
+- c1 can ping, http cm
+- c2 can ping cm
+
+conf t
+no access-list 108
+access-list 108 permit icmp host p1 host cm 
+access-list 108 permit tcp host p1 host cm eq 80
+access-list 108 permit icmp host p2 host cm 
+access-list 108 permit tcp host p2 host cm eq 80
+access-list 108 permit icmp host c1 host cm
+access-list 108 permit tcp host c1 host cm eq 80
+access-list 108 permit icmp host c2 host cm 
+Int fa 0/0
+ip access-group 108 in
+do sh ip access-list 108
+
+
+Task 8
+
+how to practice security @ home!
+Examthis 2023
+1. ACL. 2.SSH 3.NAT 4.NTP 5. DHCP (possible)
+
+1. install vmware17
+2. download csr1000v and tinyLinux
+
+
+Examlab1 configure basic IPaddress and dhcp server.
+
+VPNJP:
+config t
+no logging console
+no ip domain-lookup
+int gi 1
+ip add 192.168.108.5 255.255.255.0
+no shut
+int gi 2
+ip add 172.16.100.5 255.255.255.0
+no shut
+int gi 3
+ip add 10.103.1.5 255.255.255.0
+no shut
+
+
+exam labNo.1 dual DHCPServer
+csr1000v
+config t
+ip dhcp excluded-add 10.103.1.1 10.103.1.50 
+ip dhcp excluded-add 172.16.100.1  172.16.100.80
+ip dhcp pool VM2
+network 172.16.100.0 255.255.255.0
+default-router 172.16.100.5
+domain-name vm2.com
+dns-server 1.1.1.1
+
+ip dhcp pool VM3
+network 10.103.1.0 255.255.255.0
+default-router 10.103.1.5
+domain-name vm3.com
+dns-server 1.1.1.1
+
+
+Lab 2 SSH CONFIGURATION.
+telnet is dangerous/hackable.
+
+config t
+ip domain-name rivanit.com
+username admin2 privilege 15 secret password
+crypto key generate rsa
+		512->1024
+ip ssh version 2
+
+
+LAB 3: Network time protocol: NTP.
+
+synchronizes time with a known NTP server.
+
+sync with your headoffice: time.google.com
+
+ip route
+
+config t
+ip route 0.0.0.0 0.0.0.0 192.168.108.2
+ip domain-lookup
+ip name-server 8.8.8.8
+ntp server time.google.com
+do sh ntp association
+
+
+LAB 4
+
+how to configure network address translation
+
+static mapping: 
+inside local	outside local
+10.103.1.52 --> 192.168.108.88
+172.16.100.81 --> 192.168.108.69
+!
+10.103.1.51 --> default?
+172.16.100.82 --> default?
+
+@must edit
+
+config t
+access-list 8 permit 172.16.100.0 0.0.0.255
+access-list 8 permit 10.103.1.0 0.0.0.255
+Int Gi 2
+ ip nat Inside
+Int Gi 3
+ ip nat Inside
+Int gi 1
+ ip nat Outside
+IP Nat inside source static 10.103.1.52 192.168.108.88
+IP Nat inside source static 172.16.100.81 192.168.108.69
+IP nat inside source list 8 int Gi 1 Overload
+end
+show ip nat translation
+
+====
+
+TASK 9: YOU WILL BE FIRED IN 5 YEARS.
+
+cisco programing using eem: 
+
+
+
+

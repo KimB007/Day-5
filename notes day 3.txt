@@ -1,0 +1,195 @@
+TASK 4: Static(notdhcp) IP address for p1 p2
+
+p1:
+config t
+int e0/0
+ ip add dhcp
+ no shut
+p2:
+config t
+int e1/0
+ ip add dhcp
+ no shut
+
+TASK 5: STATIC ROUTING ON P1
+p1:  static route: isa isa
+config t 
+ip route 10.2.2.0 255.255.255.0 10.2.1.1 1
+ip route 10.2.2.0 255.255.255.0 10.2.1.2 10
+!
+ip route 192.168.1.128 255.255.255.224 10.2.1.1 1
+ip route 192.168.1.128 255.255.255.224 10.2.1.2 10
+
+p2: default route: aka pakyawan 
+
+config t
+ip route 0.0.0.0 0.0.0.0 10.2.1.2 1
+ip route 0.0.0.0 0.0.0.0 10.2.1.1 10
+
+TASK 6: give a default route for p1 only
+p1: 10.2.1.1 pref 10.2.1.2 back!
+config t
+ip route 0.0.0.0 0.0.0.0 10.2.1.1 1
+ip route 0.0.0.0 0.0.0.0 10.2.1.2 5
+
+
+TASK6 enhanced interior gateway routing protocol
+
+D1:
+config t
+router eigrp 100
+ no auto-summary
+ network 10.1.4.4 0.0.0.3
+ network 10.2.1.0 0.0.0.255
+ network 10.2.2.0 0.0.0.255
+ network 192.168.1.128 0.0.0.31
+end
+
+or NEXUS-like
+
+conf t
+	router eigrp CCNPLEVEL
+	address-family ipv4 unicast autonomous-system 100
+	network 10.1.4.6 0.0.0.0
+	network 10.2.1.1 0.0.0.0
+	network 10.2.2.1 0.0.0.0
+	network 192.168.1.129 0.0.0.0
+	end
+
+
+
++++++++++++++
+
+R4:
+config t
+Int loopback 0
+ ip add 4.4.4.4 255.255.255.255
+router ospf 1
+router-id 4.4.4.4
+network 4.4.4.4 0.0.0.0 area 34
+network 10.1.1.8 0.0.0.3 area 34
+
+R3:
+config t
+no router ospf 1
+Int loopback 0
+ ip add 3.3.3.3 255.255.255.255
+router ospf 1
+router-id 3.3.3.3
+network 3.3.3.3 0.0.0.0 area 0
+router ospf 1
+network 10.1.1.4 0.0.0.3 area 0
+network 10.1.1.8 0.0.0.3 area 34
+
+R2:
+config t
+no router ospf 1
+Int loopback 0
+ ip add 2.2.2.2 255.255.255.255
+router ospf 1
+router-id 2.2.2.2
+network 2.2.2.2 0.0.0.0 area 0
+router ospf 1
+network 10.1.1.4 0.0.0.3 area 0
+network 10.1.1.0 0.0.0.3 area 12
+
+R1:
+config t
+Int loopback 0
+ ip add 1.1.1.1 255.255.255.255
+router ospf 1
+router-id 1.1.1.1
+network 1.1.1.1 0.0.0.0 area 12
+router ospf 1
+network 10.1.1.0 0.0.0.3 area 12
+
+
+===============
+
+TASK8: Route redistribution:
+aka Making friends with other Races:
+mix OSPF and EIGRP
+
+R4: sikat: Eigrp and OSPF world:
+config T
+router eigrp 100
+redistribute ospf 1 metric 10000 100 255 1 1500
+ exit
+router ospf 1
+redistribute eigrp 100 subnets
+end
+
+
+@R1
+Config T
+Router BGP 1
+neighbor 208.8.8.4 remote-as 45
+neighbor 207.7.7.2 remote-as 2
+neighbor 209.9.9.3 remote-as 3
+network 208.8.8.0 mask 255.255.255.0
+network 207.7.7.0 mask 255.255.255.0
+network 209.9.9.0 mask 255.255.255.0
+network 10.0.0.0 mask 255.0.0.0
+
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0 
+ip route 10.0.0.0 255.0.0.0 208.8.8.1
+end
+
+show ip bgp summary
+
+
+TASK 11: introduction to Cybersecurity: 
+WFH = "VPN client: anyConnect, Fortinet, Sophons"
+Telco must not be Trusted
+
+Core: Createusername/password
+config t
+username admin privilege 15 secret pass
+line vty 0 14
+login local
+
+
+===========
+
+TASK12: SSH: SecureShell v2: 
+Encryption: 
+VPN tunnel: 1. encryption 2.hashing 3.tunneling
+
+sshEncryption: Notunnel/hashing: 
+CoreBABA: 
+config t
+ip domain-name rivanit.com
+crypto key generate rsa
+
+=============
+
+calculate hash: db8d6f07601a8afcfd664ecdaf1b0280974d1b3dbf1d17695958c0165ba29256
+
+====================
+
+@VPNJP:
+
+config t
+no logging console
+no ip domain-lookup
+ip route 0.0.0.0 0.0.0.0 200.0.0.20
+int gi 1
+ip add 200.0.0.10 255.255.255.0
+no shut
+int gi3
+ip add 10.10.10.1 255.255.255.0
+no shut
+
+
+@VPNPH:
+config t
+no logging console
+no ip domain-lookup
+ip route 0.0.0.0 0.0.0.0 200.0.0.10
+int gi 1
+ip add 200.0.0.20 255.255.255.0
+no shut
+int gi3
+ip add 10.20.20.1 255.255.255.0
+no shut
